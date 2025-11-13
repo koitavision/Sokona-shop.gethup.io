@@ -538,7 +538,7 @@
             color: white;
         }
         
-        /* Media queries for responsive design */
+        /* Responsive adjustments */
         @media (max-width: 640px) {
             .header {
                 padding: 10px 15px;
@@ -867,7 +867,7 @@
                 <div class="flex items-center space-x-3">
                     <div class="relative search-container">
                         <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="globalSearch" placeholder="Rechercher un produit..." class="search-input" oninput="searchProducts()">
+                        <input type="text" id="globalSearch" placeholder="Rechercher un produit..." class="search-input">
                         <div id="globalSearchResults" class="search-results"></div>
                     </div>
                     <div class="relative cart-icon" onclick="toggleCart()">
@@ -1659,16 +1659,17 @@
             filterProducts();
         }
 
-        // Function to search products
+        // Function to search products (global search)
         function searchProducts() {
-            const input = document.getElementById('productSearch') || document.getElementById('globalSearch');
-            const query = input.value.toLowerCase();
-            const resultsContainer = document.getElementById('productSearchResults') || document.getElementById('globalSearchResults');
+            const inputGlobal = document.getElementById('globalSearch');
+            const inputProduct = document.getElementById('productSearch');
+            const query = (inputGlobal?.value || inputProduct?.value || '').toLowerCase();
             
-            if (query.length < 2) {
-                resultsContainer.style.display = 'none';
-                return;
-            }
+            // Hide all results first
+            document.getElementById('globalSearchResults').style.display = 'none';
+            document.getElementById('productSearchResults').style.display = 'none';
+            
+            if (query.length < 2) return;
             
             const filteredProducts = products.filter(product => 
                 product.name.toLowerCase().includes(query) || 
@@ -1677,33 +1678,38 @@
                 (product.type && product.type.toLowerCase().includes(query))
             );
             
-            if (filteredProducts.length > 0) {
+            // Show results in global search if on home page or other page
+            if (inputGlobal && filteredProducts.length > 0) {
+                const resultsContainer = document.getElementById('globalSearchResults');
                 resultsContainer.innerHTML = '';
+                
                 filteredProducts.forEach(product => {
                     const resultItem = document.createElement('div');
                     resultItem.className = 'search-result-item';
                     resultItem.textContent = product.name;
                     resultItem.onclick = function() {
-                        input.value = product.name;
+                        inputGlobal.value = product.name;
                         resultsContainer.style.display = 'none';
-                        
-                        // If on products page, filter to show this product
-                        if (document.getElementById('products').classList.contains('active')) {
+                        showPage('products');
+                        document.getElementById('productSearch').value = product.name;
+                        displayAllProducts(); // Show all products
+                        const foundProduct = products.find(p => p.name === product.name);
+                        if (foundProduct) {
                             document.getElementById('allProductsContainer').innerHTML = '';
                             const productCard = document.createElement('div');
                             productCard.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300';
                             
                             productCard.innerHTML = `
                                 <div class="relative">
-                                    <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover product-image">
+                                    <img src="${foundProduct.image}" alt="${foundProduct.name}" class="w-full h-40 object-cover product-image">
                                 </div>
                                 <div class="p-4 product-info">
-                                    <h3 class="font-semibold text-base mb-1">${product.name}</h3>
-                                    <p class="text-gray-600 text-xs mb-2">${product.description}</p>
+                                    <h3 class="font-semibold text-base mb-1">${foundProduct.name}</h3>
+                                    <p class="text-gray-600 text-xs mb-2">${foundProduct.description}</p>
                                     <div class="flex items-center justify-between">
-                                        <span class="text-xl font-bold text-sokona-blue product-price">${product.price.toLocaleString()} FCFA</span>
+                                        <span class="text-xl font-bold text-sokona-blue product-price">${foundProduct.price.toLocaleString()} FCFA</span>
                                     </div>
-                                    <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${product.id})">
+                                    <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${foundProduct.id})">
                                         Commander
                                     </button>
                                 </div>
@@ -1715,9 +1721,61 @@
                     resultsContainer.appendChild(resultItem);
                 });
                 resultsContainer.style.display = 'block';
-            } else {
-                resultsContainer.innerHTML = '<div class="search-result-item">Aucun produit trouvé</div>';
+            }
+            
+            // Show results in product page search
+            if (inputProduct && filteredProducts.length > 0) {
+                const resultsContainer = document.getElementById('productSearchResults');
+                resultsContainer.innerHTML = '';
+                
+                filteredProducts.forEach(product => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.textContent = product.name;
+                    resultItem.onclick = function() {
+                        inputProduct.value = product.name;
+                        resultsContainer.style.display = 'none';
+                        displayAllProducts(); // Show all products
+                        const foundProduct = products.find(p => p.name === product.name);
+                        if (foundProduct) {
+                            document.getElementById('allProductsContainer').innerHTML = '';
+                            const productCard = document.createElement('div');
+                            productCard.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300';
+                            
+                            productCard.innerHTML = `
+                                <div class="relative">
+                                    <img src="${foundProduct.image}" alt="${foundProduct.name}" class="w-full h-40 object-cover product-image">
+                                </div>
+                                <div class="p-4 product-info">
+                                    <h3 class="font-semibold text-base mb-1">${foundProduct.name}</h3>
+                                    <p class="text-gray-600 text-xs mb-2">${foundProduct.description}</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xl font-bold text-sokona-blue product-price">${foundProduct.price.toLocaleString()} FCFA</span>
+                                    </div>
+                                    <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${foundProduct.id})">
+                                        Commander
+                                    </button>
+                                </div>
+                            `;
+                            
+                            document.getElementById('allProductsContainer').appendChild(productCard);
+                        }
+                    };
+                    resultsContainer.appendChild(resultItem);
+                });
                 resultsContainer.style.display = 'block';
+            }
+            
+            // If no results, show message
+            if (filteredProducts.length === 0) {
+                if (inputGlobal) {
+                    document.getElementById('globalSearchResults').innerHTML = '<div class="search-result-item">Aucun produit trouvé</div>';
+                    document.getElementById('globalSearchResults').style.display = 'block';
+                }
+                if (inputProduct) {
+                    document.getElementById('productSearchResults').innerHTML = '<div class="search-result-item">Aucun produit trouvé</div>';
+                    document.getElementById('productSearchResults').style.display = 'block';
+                }
             }
         }
 
@@ -2103,6 +2161,10 @@
             displayProducts();
             displayAllProducts();
             
+            // Add event listeners for search
+            document.getElementById('globalSearch').addEventListener('input', searchProducts);
+            document.getElementById('productSearch').addEventListener('input', searchProducts);
+            
             // Add click event to the WhatsApp button to open popup
             document.querySelector('.whatsapp-button').addEventListener('click', function() {
                 openPopup();
@@ -2123,8 +2185,8 @@
             // Close search results when clicking outside
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.search-container')) {
-                    document.getElementById('productSearchResults').style.display = 'none';
                     document.getElementById('globalSearchResults').style.display = 'none';
+                    document.getElementById('productSearchResults').style.display = 'none';
                 }
             });
             
@@ -2151,6 +2213,15 @@
                 if (cartDropdown.style.display === 'block' && !e.target.closest('.cart-icon') && !e.target.closest('.cart-dropdown')) {
                     closeCart();
                 }
+            });
+            
+            // Ensure navigation works on all devices
+            document.querySelectorAll('.nav-link, .mobile-menu-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('onclick').match(/showPage\('([^']+)'\)/)[1];
+                    showPage(pageId);
+                });
             });
         });
 
