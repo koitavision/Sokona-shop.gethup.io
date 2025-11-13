@@ -538,7 +538,7 @@
             color: white;
         }
         
-        /* Responsive adjustments */
+        /* Media queries for responsive design */
         @media (max-width: 640px) {
             .header {
                 padding: 10px 15px;
@@ -735,6 +735,22 @@
             .search-container {
                 max-width: 250px;
             }
+            
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1.1rem;
+            }
         }
         
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -748,6 +764,82 @@
             
             .search-container {
                 max-width: 350px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (min-width: 1025px) and (max-width: 1280px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .search-container {
+                max-width: 400px;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (min-width: 1281px) {
+            .products-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .search-container {
+                max-width: 450px;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 2.8rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1.4rem;
             }
         }
     </style>
