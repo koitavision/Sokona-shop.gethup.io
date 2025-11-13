@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SokonaShop - Votre boutique en ligne</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .admin-panel {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .admin-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+        
+        .admin-btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .admin-btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .admin-btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .sokona-blue {
+            background-color: #3b82f6;
+        }
+        
+        .sokona-green {
+            background-color: #10b981;
+        }
+        
+        .sokona-purple {
+            background-color: #8b5cf6;
+        }
+        
+        .sokona-pink {
+            background-color: #ec4899;
+        }
+        
+        .sokona-yellow {
+            background-color: #fbbf24;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #667eea;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f3f4f6;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .file-label:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .whatsapp-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .whatsapp-icon {
+            font-size: 28px;
+        }
+        
+        .whatsapp-popup {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            z-index: 1001;
+            display: none;
+        }
+        
+        .popup-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .popup-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .popup-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .popup-header p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .popup-message {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .popup-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .popup-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .popup-btn:hover {
+            background-color: #128C7E;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #999;
+        }
+        
+        .page-section {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 35px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .order-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .order-modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .order-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .order-modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .order-modal-close {
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+        
+        .category-section {
+            padding: 20px 0;
+        }
+        
+        .category-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Mobile menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .mobile-menu-link {
+            font-size: 1.2rem;
+            color: #333;
+            text-decoration: none;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .mobile-menu-close {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Shopping cart */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .cart-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .cart-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-item-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .cart-item-price {
+            font-size: 14px;
+            color: #3b82f6;
+        }
+        
+        .cart-item-remove {
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .cart-total {
+            padding: 15px;
+            border-top: 2px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+        
+        .cart-actions {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .cart-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .cart-btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .cart-btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .desktop-nav {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .search-container {
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .search-input {
+                font-size: 14px;
+                padding: 8px 12px 8px 30px;
+            }
+            
+            .search-icon {
+                left: 10px;
+            }
+            
+            .hero-gradient {
+                padding: 30px 0;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hero-button {
+                width: 100%;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+                text-align: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-card {
+                margin-bottom: 15px;
+            }
+            
+            .product-image {
+                height: 200px;
+            }
+            
+            .product-info {
+                padding: 15px;
+            }
+            
+            .product-price {
+                font-size: 1.3rem;
+            }
+            
+            .whatsapp-button {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .whatsapp-icon {
+                font-size: 24px;
+            }
+            
+            .whatsapp-popup {
+                bottom: 80px;
+                right: 15px;
+                width: 250px;
+            }
+            
+            .order-modal-content {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .order-modal-title {
+                font-size: 1.1rem;
+            }
+            
+            .page-header {
+                padding: 30px 0;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-card {
+                padding: 15px;
+            }
+            
+            .category-icon {
+                font-size: 2rem;
+            }
+            
+            .category-name {
+                font-size: 1.1rem;
+            }
+            
+            .footer {
+                padding: 30px 15px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-column {
+                margin-bottom: 20px;
+            }
+            
+            .copyright {
+                text-align: center;
+            }
+            
+            .cart-dropdown {
+                width: 280px;
+            }
+            
+            .cart-item {
+                padding: 8px 10px;
+            }
+            
+            .cart-item-image {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .cart-item-name {
+                font-size: 12px;
+            }
+            
+            .cart-item-price {
+                font-size: 12px;
+            }
+            
+            .cart-total {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .cart-actions {
+                padding: 10px;
+                flex-direction: column;
+            }
+            
+            .cart-btn {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .search-container {
+                max-width: 250px;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .search-container {
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50 header">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <img src="https://placehold.co/60x60/1e293b/ffffff?text=S" alt="SokonaShop" class="w-10 h-10">
+                    <span class="text-xl font-bold text-gray-800 logo">SokonaShop</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-6 desktop-nav">
+                    <a href="#" class="nav-link text-gray-700 hover:text-sokona-blue font-medium active-page" onclick="showPage('home')">Accueil</a>
+                    <a href="#" class="nav-link text-gray-700 hover:text-sokona-blue font-medium" onclick="showPage('about')">À propos</a>
+                    <a href="#" class="nav-link text-gray-700 hover:text-sokona-blue font-medium" onclick="showPage('products')">Produits</a>
+                    <a href="#" class="nav-link text-gray-700 hover:text-sokona-blue font-medium" onclick="showPage('contact')">Contact</a>
+                </nav>
+                
+                <!-- Search, Cart and User -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="globalSearch" placeholder="Rechercher un produit..." class="search-input" oninput="searchProducts()">
+                        <div id="globalSearchResults" class="search-results"></div>
+                    </div>
+                    <div class="relative cart-icon" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span class="cart-count">0</span>
+                    </div>
+                    <button class="p-2 text-gray-700 hover:text-sokona-blue">
+                        <i class="fas fa-user text-lg"></i>
+                    </button>
+                    <button class="md:hidden p-2 text-gray-700 mobile-toggle" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+        <div class="mobile-menu-header">
+            <h3 class="font-bold">Menu</h3>
+            <span class="mobile-menu-close" onclick="toggleMobileMenu()">&times;</span>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="#" class="mobile-menu-link" onclick="showPage('home'); toggleMobileMenu();">Accueil</a>
+            <a href="#" class="mobile-menu-link" onclick="showPage('about'); toggleMobileMenu();">À propos</a>
+            <a href="#" class="mobile-menu-link" onclick="showPage('products'); toggleMobileMenu();">Produits</a>
+            <a href="#" class="mobile-menu-link" onclick="showPage('contact'); toggleMobileMenu();">Contact</a>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Dropdown -->
+    <div id="cartDropdown" class="cart-dropdown">
+        <div class="p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Votre panier</h3>
+                <span class="text-sm text-gray-500" id="cartItemCount">0 article(s)</span>
+            </div>
+            <div id="cartItems" class="space-y-2">
+                <!-- Cart items will be added here dynamically -->
+                <div class="text-center py-4 text-gray-500">Votre panier est vide</div>
+            </div>
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">0 FCFA</span>
+            </div>
+            <div class="cart-actions">
+                <button class="cart-btn cart-btn-secondary" onclick="closeCart()">Continuer les achats</button>
+                <button class="cart-btn cart-btn-primary" onclick="checkout()">Passer à la caisse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Access Section -->
+    <section class="py-6 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="max-w-md mx-auto bg-white p-4 rounded-xl shadow-md">
+                <h3 class="text-lg font-bold mb-3 text-center">Accès Administrateur</h3>
+                <div class="flex">
+                    <input type="password" id="adminCode" placeholder="Entrez le code d'admin" class="flex-1 p-2 border border-gray-300 rounded-l-lg text-sm">
+                    <button onclick="checkAdminCode()" class="bg-sokona-blue text-white px-3 py-2 rounded-r-lg hover:bg-blue-700 text-sm">
+                        <i class="fas fa-lock"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel">
+        <h3 class="text-xl font-bold mb-4 text-center">Panneau d'Administration</h3>
+        
+        <div class="grid grid-cols-1 gap-6">
+            <!-- Add Product Form -->
+            <div class="bg-gray-50 p-4 rounded-xl">
+                <h4 class="text-lg font-semibold mb-3">Ajouter un nouveau produit</h4>
+                <input type="text" id="productName" placeholder="Nom du produit" class="admin-input text-sm">
+                <input type="text" id="productDescription" placeholder="Description du produit" class="admin-input text-sm">
+                <input type="number" id="productPrice" placeholder="Prix (FCFA)" step="100" class="admin-input text-sm">
+                
+                <!-- Image upload section -->
+                <div class="mt-3">
+                    <label class="block text-gray-700 mb-2 text-sm">Image du produit</label>
+                    <input type="file" id="productImageFile" class="file-input" accept="image/*" onchange="previewImage(event)">
+                    <label for="productImageFile" class="file-label text-sm">
+                        <i class="fas fa-upload mr-1"></i> Choisir une image
+                    </label>
+                    <div id="imagePreview" class="image-preview">
+                        <span class="text-gray-500 text-sm">Aperçu de l'image</span>
+                    </div>
+                </div>
+                
+                <input type="text" id="productCategory" placeholder="Catégorie" class="admin-input text-sm">
+                <button onclick="addProduct()" class="admin-btn admin-btn-primary w-full mt-3">
+                    <i class="fas fa-plus mr-1"></i> Ajouter le produit
+                </button>
+            </div>
+            
+            <!-- Update/Delete Product Form -->
+            <div class="bg-gray-50 p-4 rounded-xl">
+                <h4 class="text-lg font-semibold mb-3">Modifier ou Supprimer un produit</h4>
+                <select id="productSelect" class="admin-input mb-3 text-sm">
+                    <option value="">Sélectionnez un produit</option>
+                </select>
+                
+                <!-- Update image section -->
+                <div class="mt-3">
+                    <label class="block text-gray-700 mb-2 text-sm">Nouvelle image (optionnel)</label>
+                    <input type="file" id="newImageFile" class="file-input" accept="image/*" onchange="previewNewImage(event)">
+                    <label for="newImageFile" class="file-label text-sm">
+                        <i class="fas fa-upload mr-1"></i> Choisir une nouvelle image
+                    </label>
+                    <div id="newImagePreview" class="image-preview">
+                        <span class="text-gray-500 text-sm">Aperçu de la nouvelle image</span>
+                    </div>
+                </div>
+                
+                <input type="number" id="newPrice" placeholder="Nouveau prix (FCFA)" step="100" class="admin-input text-sm">
+                <div class="flex space-x-2">
+                    <button onclick="updateProduct()" class="admin-btn admin-btn-success flex-1 text-sm">
+                        <i class="fas fa-edit mr-1"></i> Modifier
+                    </button>
+                    <button onclick="deleteProduct()" class="admin-btn admin-btn-danger flex-1 text-sm">
+                        <i class="fas fa-trash mr-1"></i> Supprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6">
+            <h4 class="text-lg font-semibold mb-3">Produits actuels</h4>
+            <div id="currentProducts" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Products will be listed here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Page -->
+    <section id="home" class="page-section active">
+        <!-- Hero Section -->
+        <section class="hero-gradient text-white py-12">
+            <div class="container mx-auto px-4 text-center">
+                <div class="mb-4">
+                    <img src="https://placehold.co/120x120/1e293b/ffffff?text=S" alt="SokonaShop" class="mx-auto w-20 h-20">
+                </div>
+                <h1 class="text-3xl font-bold mb-4 hero-title">Bienvenue sur SokonaShop</h1>
+                <p class="text-lg mb-6 hero-subtitle">Découvrez les meilleurs produits à des prix imbattables. Livraison rapide et service client exceptionnel.</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center hero-buttons">
+                    <button class="bg-white text-sokona-blue px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition duration-300 hero-button">
+                        Commencer les achats
+                    </button>
+                    <button class="border-2 border-white text-white px-6 py-2 rounded-full font-semibold hover:bg-white hover:text-sokona-blue transition duration-300 hero-button">
+                        Voir les promotions
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="category-section bg-white py-8">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold text-center mb-6 section-title">Nos Catégories</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 categories-grid">
+                    <div class="category-card bg-gray-50 p-4 rounded-xl text-center hover:shadow-lg transition duration-300" onclick="filterByCategory('Vêtements')">
+                        <i class="fas fa-tshirt text-3xl sokona-blue mb-3 category-icon"></i>
+                        <h3 class="font-semibold text-gray-700 category-name">Vêtements</h3>
+                        <p class="text-xs text-gray-500 mt-1">Homme, Femme, Enfant</p>
+                    </div>
+                    <div class="category-card bg-gray-50 p-4 rounded-xl text-center hover:shadow-lg transition duration-300" onclick="filterByCategory('Épices')">
+                        <i class="fas fa-pepper-hot text-3xl sokona-green mb-3 category-icon"></i>
+                        <h3 class="font-semibold text-gray-700 category-name">Épices</h3>
+                        <p class="text-xs text-gray-500 mt-1">Poudres aromatiques</p>
+                    </div>
+                    <div class="category-card bg-gray-50 p-4 rounded-xl text-center hover:shadow-lg transition duration-300" onclick="filterByCategory('Pâtes d\'arachide')">
+                        <i class="fas fa-apple-alt text-3xl sokona-purple mb-3 category-icon"></i>
+                        <h3 class="font-semibold text-gray-700 category-name">Pâtes d'arachide</h3>
+                        <p class="text-xs text-gray-500 mt-1">Nutrition naturelle</p>
+                    </div>
+                    <div class="category-card bg-gray-50 p-4 rounded-xl text-center hover:shadow-lg transition duration-300" onclick="filterByCategory('Santé')">
+                        <i class="fas fa-heartbeat text-3xl sokona-pink mb-3 category-icon"></i>
+                        <h3 class="font-semibold text-gray-700 category-name">Santé</h3>
+                        <p class="text-xs text-gray-500 mt-1">Soins et bien-être</p>
+                    </div>
+                    <div class="category-card bg-gray-50 p-4 rounded-xl text-center hover:shadow-lg transition duration-300" onclick="filterByCategory('Autres')">
+                        <i class="fas fa-box text-3xl sokona-yellow mb-3 category-icon"></i>
+                        <h3 class="font-semibold text-gray-700 category-name">Autres</h3>
+                        <p class="text-xs text-gray-500 mt-1">Divers produits</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section class="py-8 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold text-center mb-6 section-title">Produits en Vedette</h2>
+                <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 products-grid">
+                    <!-- Products will be loaded here dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- WhatsApp Order Section -->
+        <section class="py-8 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-6 text-center">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Commandez facilement via WhatsApp</h2>
+                    <p class="text-base text-gray-600 mb-6">Pour commander un produit, contactez-nous directement sur WhatsApp.</p>
+                    
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fab fa-whatsapp text-2xl text-white"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-800 text-sm">Numéro de contact</h3>
+                            <p class="text-lg font-bold text-green-600">(223) 76319307</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <i class="fas fa-comments text-2xl text-white"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-800 text-sm">Comment ça marche ?</h3>
+                            <p class="text-xs text-gray-600">1. Appuyez sur le bouton<br>2. Envoyez le nom du produit<br>3. Confirmez votre adresse<br>4. Recevez votre commande !</p>
+                        </div>
+                    </div>
+                    
+                    <a href="https://wa.me/22376319307" target="_blank" class="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full mt-6 transition duration-300 shadow-lg w-full justify-center">
+                        <i class="fab fa-whatsapp mr-2"></i> Commander maintenant
+                    </a>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- About Page -->
+    <section id="about" class="page-section">
+        <div class="page-header">
+            <h1 class="page-title">À propos de SokonaShop</h1>
+            <p class="page-subtitle">Notre histoire, notre mission et nos valeurs</p>
+        </div>
+        
+        <div class="container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 gap-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Notre Histoire</h2>
+                        <p class="text-base text-gray-600 mb-3">SokonaShop a été fondée en 2020 par Sokona, notre fondatrice et directrice générale, avec une vision claire : offrir à nos clients les meilleurs produits au meilleur prix, avec un service exceptionnel.</p>
+                        <p class="text-base text-gray-600 mb-3">Depuis ses débuts modestes, SokonaShop a grandi pour devenir l'une des boutiques en ligne les plus fiables de la région, grâce à l'engagement inébranlable de Sokona envers la qualité et la satisfaction client.</p>
+                        <p class="text-base text-gray-600">Sokona dirige l'entreprise avec passion, veillant à ce que chaque produit et chaque interaction avec nos clients reflète notre engagement envers l'excellence.</p>
+                    </div>
+                    <div>
+                        <img src="https://placehold.co/600x400/e5e7eb/6b7280?text=Notre+Équipe" alt="Notre équipe" class="rounded-xl shadow-lg w-full">
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Nos Valeurs</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-md text-center">
+                            <i class="fas fa-heart text-3xl sokona-blue mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">Satisfaction Client</h3>
+                            <p class="text-gray-600 text-sm">Votre satisfaction est notre priorité absolue</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-md text-center">
+                            <i class="fas fa-shield-alt text-3xl sokona-green mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">Qualité</h3>
+                            <p class="text-gray-600 text-sm">Nous sélectionnons uniquement les meilleurs produits</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-md text-center">
+                            <i class="fas fa-truck text-3xl sokona-purple mb-3"></i>
+                            <h3 class="text-lg font-semibold mb-2">Livraison Rapide</h3>
+                            <p class="text-gray-600 text-sm">Livraison fiable et dans les délais</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Page -->
+    <section id="products" class="page-section">
+        <div class="page-header">
+            <h1 class="page-title">Nos Produits</h1>
+            <p class="page-subtitle">Découvrez notre sélection de produits de qualité</p>
+        </div>
+        
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Tous nos produits</h2>
+                <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mt-4 md:mt-0 w-full md:w-auto">
+                    <select id="categoryFilter" class="p-2 border border-gray-300 rounded-lg text-sm" onchange="filterProducts()">
+                        <option value="">Toutes les catégories</option>
+                        <option value="Vêtements">Vêtements</option>
+                        <option value="Épices">Épices</option>
+                        <option value="Pâtes d'arachide">Pâtes d'arachide</option>
+                        <option value="Santé">Santé</option>
+                        <option value="Autres">Autres</option>
+                    </select>
+                    <div class="relative search-container w-full md:w-auto">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="productSearch" placeholder="Rechercher un produit..." class="search-input" oninput="searchProducts()">
+                        <div id="productSearchResults" class="search-results"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="allProductsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 products-grid">
+                <!-- Products will be loaded here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Page -->
+    <section id="contact" class="page-section">
+        <div class="page-header">
+            <h1 class="page-title">Contactez-nous</h1>
+            <p class="page-subtitle">Nous sommes là pour vous aider</p>
+        </div>
+        
+        <div class="container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Informations de contact</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-xl sokona-blue mt-1 mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-1">Adresse</h3>
+                                    <p class="text-gray-600 text-sm">Base A, Bamako, Mali</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <i class="fas fa-envelope text-xl sokona-green mt-1 mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-1">Email</h3>
+                                    <p class="text-gray-600 text-sm">traoresokona296@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <i class="fas fa-phone text-xl sokona-purple mt-1 mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-1">Téléphone</h3>
+                                    <p class="text-gray-600 text-sm">(223) 76319307</p>
+                                    <p class="text-gray-600 text-sm mt-1">Lun-Ven: 9h - 18h</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <i class="fab fa-whatsapp text-xl sokona-green mt-1 mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-1">WhatsApp</h3>
+                                    <p class="text-gray-600 text-sm">(223) 76319307</p>
+                                    <p class="text-gray-600 text-sm mt-1">Disponible 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4">Heures d'ouverture</h2>
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <ul class="space-y-1">
+                                    <li class="flex justify-between border-b pb-1">
+                                        <span>Lundi - Vendredi</span>
+                                        <span>9h00 - 18h00</span>
+                                    </li>
+                                    <li class="flex justify-between border-b pb-1">
+                                        <span>Samedi</span>
+                                        <span>10h00 - 16h00</span>
+                                    </li>
+                                    <li class="flex justify-between">
+                                        <span>Dimanche</span>
+                                        <span>Fermé</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Envoyez-nous un message</h2>
+                        <form class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 mb-1 text-sm">Nom complet</label>
+                                <input type="text" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1 text-sm">Email</label>
+                                <input type="email" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1 text-sm">Téléphone</label>
+                                <input type="tel" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1 text-sm">Sujet</label>
+                                <input type="text" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-1 text-sm">Message</label>
+                                <textarea rows="4" class="w-full p-2 border border-gray-300 rounded-lg text-sm"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-sokona-blue text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-sm">
+                                Envoyer le message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Notre localisation</h2>
+                    <div class="bg-gray-200 h-64 rounded-xl flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-map-marked-alt text-4xl text-gray-500 mb-2"></i>
+                            <p class="text-base text-gray-600">Carte de localisation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="order-modal">
+        <div class="order-modal-content">
+            <div class="order-modal-header">
+                <h2 class="order-modal-title">Passer une commande</h2>
+                <span class="order-modal-close" onclick="closeOrderModal()">&times;</span>
+            </div>
+            <div id="orderProductInfo"></div>
+            <form id="orderForm" class="space-y-3">
+                <div>
+                    <label class="block text-gray-700 mb-1 text-sm">Nom complet</label>
+                    <input type="text" id="customerName" class="w-full p-2 border border-gray-300 rounded-lg text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1 text-sm">Email</label>
+                    <input type="email" id="customerEmail" class="w-full p-2 border border-gray-300 rounded-lg text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1 text-sm">Téléphone</label>
+                    <input type="tel" id="customerPhone" class="w-full p-2 border border-gray-300 rounded-lg text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1 text-sm">Adresse de livraison</label>
+                    <textarea id="customerAddress" rows="3" class="w-full p-2 border border-gray-300 rounded-lg text-sm" required></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1 text-sm">Quantité</label>
+                    <input type="number" id="quantity" class="w-full p-2 border border-gray-300 rounded-lg text-sm" value="1" min="1" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-1 text-sm">Commentaires (optionnel)</label>
+                    <textarea id="customerComments" rows="2" class="w-full p-2 border border-gray-300 rounded-lg text-sm"></textarea>
+                </div>
+                <button type="button" onclick="sendOrder()" class="w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 transition duration-300 text-sm">
+                    Commander via WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 footer">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 footer-grid">
+                <div>
+                    <div class="flex items-center space-x-2 mb-3">
+                        <img src="https://placehold.co/40x40/1e293b/ffffff?text=S" alt="SokonaShop" class="w-10 h-10">
+                        <span class="text-xl font-bold">SokonaShop</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Votre boutique en ligne de confiance pour tous vos achats. Commandez via WhatsApp au (223) 76319307.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-3">Liens Rapides</h4>
+                    <ul class="space-y-1">
+                        <li><a href="#" class="hover:text-white text-sm" onclick="showPage('home')">Accueil</a></li>
+                        <li><a href="#" class="hover:text-white text-sm" onclick="showPage('about')">À propos</a></li>
+                        <li><a href="#" class="hover:text-white text-sm" onclick="showPage('products')">Produits</a></li>
+                        <li><a href="#" class="hover:text-white text-sm" onclick="showPage('contact')">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-3">Support</h4>
+                    <ul class="space-y-1">
+                        <li><a href="https://wa.me/22376319307" class="hover:text-white text-sm">Contact WhatsApp</a></li>
+                        <li><a href="#" class="hover:text-white text-sm">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white text-sm">Livraison</a></li>
+                        <li><a href="#" class="hover:text-white text-sm">Retours</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-3">Contact</h4>
+                    <ul class="space-y-1 text-sm">
+                        <li><i class="fas fa-envelope mr-2"></i> traoresokona296@gmail.com</li>
+                        <li><i class="fab fa-whatsapp mr-2"></i> (223) 76319307</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> Base A, Bamako, Mali</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-6 pt-6 copyright">
+                <p class="text-sm text-center text-gray-400">&copy; 2025 SokonaShop. Tous droits réservés. Toutes les commandes sont traitées via WhatsApp.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/22376319307" target="_blank" class="whatsapp-button">
+        <i class="fab fa-whatsapp whatsapp-icon"></i>
+    </a>
+
+    <!-- WhatsApp Popup -->
+    <div class="whatsapp-popup" id="whatsappPopup">
+        <span class="popup-close" onclick="closePopup()">&times;</span>
+        <div class="popup-header">
+            <img src="https://placehold.co/40x40/25D366/FFFFFF?text=S" alt="SokonaShop">
+            <div>
+                <h3>SokonaShop</h3>
+                <p>En ligne maintenant</p>
+            </div>
+        </div>
+        <p class="popup-message">Bonjour ! Comment puis-je vous aider aujourd'hui ?</p>
+        <input type="text" class="popup-input" placeholder="Tapez votre message...">
+        <button class="popup-btn">Envoyer</button>
+    </div>
+
+    <script>
+        // Initial products data
+        let products = [
+            {
+                id: 1,
+                name: "Chemise Homme Premium",
+                description: "Chemise de qualité pour homme, tissu coton",
+                price: 8500,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Chemise",
+                category: "Vêtements",
+                type: "Homme"
+            },
+            {
+                id: 2,
+                name: "Robe Femme Élégante",
+                description: "Robe de soirée pour femme, tissu soie",
+                price: 15000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Robe",
+                category: "Vêtements",
+                type: "Femme"
+            },
+            {
+                id: 3,
+                name: "T-shirt Enfant",
+                description: "T-shirt coloré pour enfant, tissu doux",
+                price: 3500,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=T-shirt",
+                category: "Vêtements",
+                type: "Enfant"
+            },
+            {
+                id: 4,
+                name: "Piment de Cayenne en Poudre",
+                description: "Piment fort en poudre, idéal pour épicer vos plats",
+                price: 1200,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Piment",
+                category: "Épices"
+            },
+            {
+                id: 5,
+                name: "Curry en Poudre",
+                description: "Mélange d'épices curry authentique",
+                price: 1000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Curry",
+                category: "Épices"
+            },
+            {
+                id: 6,
+                name: "Pâte d'Arachide Naturelle",
+                description: "Pâte d'arachide biologique, sans additifs",
+                price: 2500,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Arachide",
+                category: "Pâtes d'arachide"
+            },
+            {
+                id: 7,
+                name: "Pâte d'Arachide au Chocolat",
+                description: "Pâte d'arachide avec un goût de chocolat",
+                price: 3000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Chocolat",
+                category: "Pâtes d'arachide"
+            },
+            {
+                id: 8,
+                name: "Vitamines Naturelles",
+                description: "Complément vitaminé naturel",
+                price: 5000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Vitamines",
+                category: "Santé"
+            },
+            {
+                id: 9,
+                name: "Shampooing Bio",
+                description: "Shampooing naturel sans sulfates",
+                price: 3500,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Shampooing",
+                category: "Santé"
+            },
+            {
+                id: 10,
+                name: "Sac à Main en Cuir",
+                description: "Sac à main élégant en cuir véritable",
+                price: 12000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Sac",
+                category: "Autres"
+            },
+            {
+                id: 11,
+                name: "Chaussures de Marche",
+                description: "Chaussures confortables pour la marche",
+                price: 18000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Chaussures",
+                category: "Autres"
+            },
+            {
+                id: 12,
+                name: "Huile d'Argan",
+                description: "Huile cosmétique naturelle d'argan",
+                price: 8000,
+                image: "https://placehold.co/300x300/e5e7eb/6b7280?text=Huile",
+                category: "Santé"
+            }
+        ];
+
+        // Store selected product for ordering
+        let selectedProduct = null;
+
+        // Shopping cart
+        let cart = [];
+        let cartCount = 0;
+
+        // Function to show specific page
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active-page');
+            });
+            
+            // Find the link that corresponds to the page
+            if(pageId === 'home') {
+                document.querySelector('[onclick="showPage(\'home\')"]').classList.add('active-page');
+            } else if(pageId === 'about') {
+                document.querySelector('[onclick="showPage(\'about\')"]').classList.add('active-page');
+            } else if(pageId === 'products') {
+                document.querySelector('[onclick="showPage(\'products\')"]').classList.add('active-page');
+            } else if(pageId === 'contact') {
+                document.querySelector('[onclick="showPage(\'contact\')"]').classList.add('active-page');
+            }
+            
+            // If products page is shown, populate it
+            if(pageId === 'products') {
+                displayAllProducts();
+            }
+            
+            // Close mobile menu if open
+            toggleMobileMenu(false);
+        }
+
+        // Function to toggle mobile menu
+        function toggleMobileMenu(forceState = null) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (forceState !== null) {
+                mobileMenu.style.display = forceState ? 'block' : 'none';
+            } else {
+                mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // Function to display products on home page
+        function displayProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+            
+            // Show only featured products (first 4)
+            const featuredProducts = products.slice(0, 4);
+            
+            featuredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300';
+                
+                productCard.innerHTML = `
+                    <div class="relative">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover product-image">
+                    </div>
+                    <div class="p-4 product-info">
+                        <h3 class="font-semibold text-base mb-1">${product.name}</h3>
+                        <p class="text-gray-600 text-xs mb-2">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-sokona-blue product-price">${product.price.toLocaleString()} FCFA</span>
+                        </div>
+                        <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${product.id})">
+                            Commander
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+
+        // Function to display all products on products page
+        function displayAllProducts() {
+            const container = document.getElementById('allProductsContainer');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300';
+                
+                productCard.innerHTML = `
+                    <div class="relative">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover product-image">
+                    </div>
+                    <div class="p-4 product-info">
+                        <h3 class="font-semibold text-base mb-1">${product.name}</h3>
+                        <p class="text-gray-600 text-xs mb-2">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-sokona-blue product-price">${product.price.toLocaleString()} FCFA</span>
+                        </div>
+                        <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${product.id})">
+                            Commander
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+
+        // Function to filter products by category
+        function filterProducts() {
+            const category = document.getElementById('categoryFilter').value;
+            const container = document.getElementById('allProductsContainer');
+            container.innerHTML = '';
+            
+            const filteredProducts = category ? 
+                products.filter(product => product.category === category) : 
+                products;
+            
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300';
+                
+                productCard.innerHTML = `
+                    <div class="relative">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover product-image">
+                    </div>
+                    <div class="p-4 product-info">
+                        <h3 class="font-semibold text-base mb-1">${product.name}</h3>
+                        <p class="text-gray-600 text-xs mb-2">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-sokona-blue product-price">${product.price.toLocaleString()} FCFA</span>
+                        </div>
+                        <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${product.id})">
+                            Commander
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+
+        // Function to filter products by category from home page
+        function filterByCategory(category) {
+            showPage('products');
+            document.getElementById('categoryFilter').value = category;
+            filterProducts();
+        }
+
+        // Function to search products
+        function searchProducts() {
+            const input = document.getElementById('productSearch') || document.getElementById('globalSearch');
+            const query = input.value.toLowerCase();
+            const resultsContainer = document.getElementById('productSearchResults') || document.getElementById('globalSearchResults');
+            
+            if (query.length < 2) {
+                resultsContainer.style.display = 'none';
+                return;
+            }
+            
+            const filteredProducts = products.filter(product => 
+                product.name.toLowerCase().includes(query) || 
+                product.description.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query) ||
+                (product.type && product.type.toLowerCase().includes(query))
+            );
+            
+            if (filteredProducts.length > 0) {
+                resultsContainer.innerHTML = '';
+                filteredProducts.forEach(product => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.textContent = product.name;
+                    resultItem.onclick = function() {
+                        input.value = product.name;
+                        resultsContainer.style.display = 'none';
+                        
+                        // If on products page, filter to show this product
+                        if (document.getElementById('products').classList.contains('active')) {
+                            document.getElementById('allProductsContainer').innerHTML = '';
+                            const productCard = document.createElement('div');
+                            productCard.className = 'product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300';
+                            
+                            productCard.innerHTML = `
+                                <div class="relative">
+                                    <img src="${product.image}" alt="${product.name}" class="w-full h-40 object-cover product-image">
+                                </div>
+                                <div class="p-4 product-info">
+                                    <h3 class="font-semibold text-base mb-1">${product.name}</h3>
+                                    <p class="text-gray-600 text-xs mb-2">${product.description}</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xl font-bold text-sokona-blue product-price">${product.price.toLocaleString()} FCFA</span>
+                                    </div>
+                                    <button class="w-full mt-3 bg-sokona-blue text-white py-1 rounded-lg hover:bg-blue-700 transition duration-300 text-sm" onclick="openOrderModal(${product.id})">
+                                        Commander
+                                    </button>
+                                </div>
+                            `;
+                            
+                            document.getElementById('allProductsContainer').appendChild(productCard);
+                        }
+                    };
+                    resultsContainer.appendChild(resultItem);
+                });
+                resultsContainer.style.display = 'block';
+            } else {
+                resultsContainer.innerHTML = '<div class="search-result-item">Aucun produit trouvé</div>';
+                resultsContainer.style.display = 'block';
+            }
+        }
+
+        // Function to open order modal
+        function openOrderModal(productId) {
+            selectedProduct = products.find(p => p.id == productId);
+            if (selectedProduct) {
+                document.getElementById('orderProductInfo').innerHTML = `
+                    <div class="mb-3 p-3 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold">${selectedProduct.name}</h3>
+                        <p class="text-gray-600 text-sm">${selectedProduct.description}</p>
+                        <p class="text-xl font-bold text-sokona-blue mt-2">${selectedProduct.price.toLocaleString()} FCFA</p>
+                    </div>
+                `;
+                document.getElementById('orderModal').style.display = 'flex';
+            }
+        }
+
+        // Function to close order modal
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('orderForm').reset();
+        }
+
+        // Function to send order via WhatsApp
+        function sendOrder() {
+            const name = document.getElementById('customerName').value;
+            const email = document.getElementById('customerEmail').value;
+            const phone = document.getElementById('customerPhone').value;
+            const address = document.getElementById('customerAddress').value;
+            const quantity = document.getElementById('quantity').value;
+            const comments = document.getElementById('customerComments').value;
+
+            if (!name || !email || !phone || !address) {
+                alert('Veuillez remplir tous les champs obligatoires!');
+                return;
+            }
+
+            const message = `Nouvelle commande de SokonaShop!\n\nProduit: ${selectedProduct.name}\nPrix: ${selectedProduct.price.toLocaleString()} FCFA\nQuantité: ${quantity}\n\nInformations client:\nNom: ${name}\nEmail: ${email}\nTéléphone: ${phone}\nAdresse: ${address}\n${comments ? 'Commentaires: ' + comments : ''}\n\nVeuillez confirmer cette commande.`;
+
+            const whatsappUrl = `https://wa.me/22376319307?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Show confirmation message
+            alert('Votre commande a été envoyée à SokonaShop via WhatsApp. Nous vous contacterons bientôt pour confirmer votre commande.');
+            
+            // Close modal and reset form
+            closeOrderModal();
+        }
+
+        // Function to update product select dropdown
+        function updateProductSelect() {
+            const select = document.getElementById('productSelect');
+            select.innerHTML = '<option value="">Sélectionnez un produit</option>';
+            
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = `${product.name} - ${product.price.toLocaleString()} FCFA`;
+                select.appendChild(option);
+            });
+        }
+
+        // Function to display current products in admin panel
+        function displayCurrentProducts() {
+            const container = document.getElementById('currentProducts');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'bg-gray-100 p-3 rounded-lg';
+                productDiv.innerHTML = `
+                    <h5 class="font-semibold text-sm">${product.name}</h5>
+                    <p class="text-xs text-gray-600">Prix: ${product.price.toLocaleString()} FCFA</p>
+                    <p class="text-xs text-gray-600">Catégorie: ${product.category}</p>
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-20 object-cover mt-2 rounded">
+                `;
+                container.appendChild(productDiv);
+            });
+        }
+
+        // Admin code check
+        function checkAdminCode() {
+            const codeInput = document.getElementById('adminCode');
+            const adminPanel = document.getElementById('adminPanel');
+            
+            // Using a more secure method - in a real app, this would be server-side
+            const adminPassword = btoa('sokona!17@'); // Base64 encoded password
+            const enteredPassword = btoa(codeInput.value);
+            
+            if (enteredPassword === adminPassword) {
+                adminPanel.style.display = 'block';
+                updateProductSelect();
+                displayCurrentProducts();
+                codeInput.value = '';
+            } else {
+                alert('Code administrateur incorrect!');
+            }
+        }
+
+        // Preview image for new product
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${reader.result}" alt="Aperçu">`;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Preview image for updating product
+        function previewNewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('newImagePreview');
+                preview.innerHTML = `<img src="${reader.result}" alt="Aperçu">`;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Add new product
+        function addProduct() {
+            const name = document.getElementById('productName').value;
+            const description = document.getElementById('productDescription').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const category = document.getElementById('productCategory').value;
+            const imageFile = document.getElementById('productImageFile').files[0];
+            
+            if (!name || !description || !price || !category) {
+                alert('Veuillez remplir tous les champs!');
+                return;
+            }
+            
+            // If no image file selected, use placeholder
+            let imageUrl = "https://placehold.co/300x300/e5e7eb/6b7280?text=Produit";
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageUrl = e.target.result;
+                    
+                    const newProduct = {
+                        id: Date.now(), // Unique ID
+                        name,
+                        description,
+                        price,
+                        image: imageUrl,
+                        category,
+                        type: "Autres" // Default type
+                    };
+                    
+                    products.push(newProduct);
+                    displayProducts();
+                    displayAllProducts();
+                    updateProductSelect();
+                    displayCurrentProducts();
+                    
+                    // Clear form
+                    document.getElementById('productName').value = '';
+                    document.getElementById('productDescription').value = '';
+                    document.getElementById('productPrice').value = '';
+                    document.getElementById('productCategory').value = '';
+                    document.getElementById('productImageFile').value = '';
+                    document.getElementById('imagePreview').innerHTML = '<span class="text-gray-500 text-sm">Aperçu de l\'image</span>';
+                    
+                    alert('Produit ajouté avec succès!');
+                }
+                reader.readAsDataURL(imageFile);
+            } else {
+                const newProduct = {
+                    id: Date.now(), // Unique ID
+                    name,
+                    description,
+                    price,
+                    image: imageUrl,
+                    category,
+                    type: "Autres" // Default type
+                };
+                
+                products.push(newProduct);
+                displayProducts();
+                displayAllProducts();
+                updateProductSelect();
+                displayCurrentProducts();
+                
+                // Clear form
+                document.getElementById('productName').value = '';
+                document.getElementById('productDescription').value = '';
+                document.getElementById('productPrice').value = '';
+                document.getElementById('productCategory').value = '';
+                document.getElementById('productImageFile').value = '';
+                document.getElementById('imagePreview').innerHTML = '<span class="text-gray-500 text-sm">Aperçu de l\'image</span>';
+                
+                alert('Produit ajouté avec succès!');
+            }
+        }
+
+        // Update product (price and/or image)
+        function updateProduct() {
+            const productId = document.getElementById('productSelect').value;
+            const newPrice = parseFloat(document.getElementById('newPrice').value);
+            const imageFile = document.getElementById('newImageFile').files[0];
+            
+            if (!productId) {
+                alert('Veuillez sélectionner un produit à modifier!');
+                return;
+            }
+            
+            const product = products.find(p => p.id == productId);
+            if (product) {
+                let updateComplete = true;
+                
+                // Update price if provided
+                if (newPrice) {
+                    const oldPrice = product.price;
+                    product.price = newPrice;
+                    alert(`Prix mis à jour de ${oldPrice.toLocaleString()} FCFA à ${newPrice.toLocaleString()} FCFA`);
+                }
+                
+                // Update image if provided
+                if (imageFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        product.image = e.target.result;
+                        displayProducts();
+                        displayAllProducts();
+                        updateProductSelect();
+                        displayCurrentProducts();
+                        alert('Produit mis à jour avec succès!');
+                    }
+                    reader.readAsDataURL(imageFile);
+                } else {
+                    displayProducts();
+                    displayAllProducts();
+                    updateProductSelect();
+                    displayCurrentProducts();
+                    if (newPrice) {
+                        alert('Prix mis à jour avec succès!');
+                    }
+                }
+            }
+        }
+
+        // Delete product
+        function deleteProduct() {
+            const productId = document.getElementById('productSelect').value;
+            
+            if (!productId) {
+                alert('Veuillez sélectionner un produit à supprimer!');
+                return;
+            }
+            
+            const product = products.find(p => p.id == productId);
+            if (product) {
+                if (confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.name}"?`)) {
+                    products = products.filter(p => p.id != productId);
+                    displayProducts();
+                    displayAllProducts();
+                    updateProductSelect();
+                    displayCurrentProducts();
+                    alert('Produit supprimé avec succès!');
+                }
+            }
+        }
+
+        // Shopping cart functions
+        function addToCart(productId) {
+            const product = products.find(p => p.id == productId);
+            if (product) {
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image,
+                        quantity: 1
+                    });
+                }
+                updateCart();
+                showCart();
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+            showCart();
+        }
+
+        function updateCart() {
+            cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            document.querySelector('.cart-count').textContent = cartCount;
+            
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="text-center py-4 text-gray-500">Votre panier est vide</div>';
+                cartTotal.textContent = '0 FCFA';
+                document.getElementById('cartItemCount').textContent = '0 article(s)';
+            } else {
+                cartItems.innerHTML = '';
+                let total = 0;
+                
+                cart.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item';
+                    itemElement.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price.toLocaleString()} FCFA x ${item.quantity}</div>
+                        </div>
+                        <div class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    `;
+                    cartItems.appendChild(itemElement);
+                    total += item.price * item.quantity;
+                });
+                
+                cartTotal.textContent = `${total.toLocaleString()} FCFA`;
+                document.getElementById('cartItemCount').textContent = `${cartCount} article(s)`;
+            }
+        }
+
+        function toggleCart() {
+            const cartDropdown = document.getElementById('cartDropdown');
+            cartDropdown.style.display = cartDropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function showCart() {
+            const cartDropdown = document.getElementById('cartDropdown');
+            cartDropdown.style.display = 'block';
+        }
+
+        function closeCart() {
+            const cartDropdown = document.getElementById('cartDropdown');
+            cartDropdown.style.display = 'none';
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Votre panier est vide!');
+                return;
+            }
+            
+            // Create a summary of the order
+            let orderSummary = 'Nouvelle commande de SokonaShop!\n\nProduits:\n';
+            let total = 0;
+            
+            cart.forEach(item => {
+                orderSummary += `- ${item.name} x ${item.quantity} = ${(item.price * item.quantity).toLocaleString()} FCFA\n`;
+                total += item.price * item.quantity;
+            });
+            
+            orderSummary += `\nTotal: ${total.toLocaleString()} FCFA\n\nVeuillez confirmer cette commande.`;
+            
+            const whatsappUrl = `https://wa.me/22376319307?text=${encodeURIComponent(orderSummary)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Clear cart after checkout
+            cart = [];
+            updateCart();
+            closeCart();
+            
+            alert('Votre commande a été envoyée à SokonaShop via WhatsApp. Nous vous contacterons bientôt pour confirmer votre commande.');
+        }
+
+        // Show/hide WhatsApp popup
+        function openPopup() {
+            document.getElementById('whatsappPopup').style.display = 'block';
+        }
+        
+        function closePopup() {
+            document.getElementById('whatsappPopup').style.display = 'none';
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts();
+            displayAllProducts();
+            
+            // Add click event to the WhatsApp button to open popup
+            document.querySelector('.whatsapp-button').addEventListener('click', function() {
+                openPopup();
+            });
+            
+            // Add submit event to the popup form
+            document.querySelector('.popup-btn').addEventListener('click', function() {
+                const input = document.querySelector('.popup-input');
+                const message = input.value;
+                if (message.trim()) {
+                    const whatsappUrl = `https://wa.me/22376319307?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                    input.value = '';
+                    closePopup();
+                }
+            });
+            
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-container')) {
+                    document.getElementById('productSearchResults').style.display = 'none';
+                    document.getElementById('globalSearchResults').style.display = 'none';
+                }
+            });
+            
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const modal = document.getElementById('orderModal');
+                if (event.target === modal) {
+                    closeOrderModal();
+                }
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                const mobileMenu = document.getElementById('mobileMenu');
+                const mobileToggle = document.querySelector('.mobile-toggle');
+                if (mobileMenu.style.display === 'block' && !e.target.closest('.mobile-menu') && !e.target.closest('.mobile-toggle')) {
+                    toggleMobileMenu(false);
+                }
+            });
+            
+            // Close cart when clicking outside
+            document.addEventListener('click', function(e) {
+                const cartDropdown = document.getElementById('cartDropdown');
+                if (cartDropdown.style.display === 'block' && !e.target.closest('.cart-icon') && !e.target.closest('.cart-dropdown')) {
+                    closeCart();
+                }
+            });
+        });
+
+        // Allow Enter key to submit admin code
+        document.getElementById('adminCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAdminCode();
+            }
+        });
+    </script>
+</body>
+</html>
+
